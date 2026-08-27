@@ -38,14 +38,6 @@ quote-guessing-game/
 └── README.md
 ```
 
-## Technologies
-
-* **Python** — Programming language
-* **Requests** — Fetches web pages
-* **BeautifulSoup** — Parses HTML
-* **Random** — Selects a random quote
-* **Time** — Adds a delay between requests
-
 ## Data Source
 
 Quotes and author information are collected from:
