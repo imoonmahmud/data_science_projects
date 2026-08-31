@@ -1,5 +1,6 @@
 from playwright.sync_api import sync_playwright
 import re
+import json
 
 def get_products():
     url = 'https://www.daraz.com.bd/catalog/?page=1&q=Keyboard'
@@ -14,12 +15,12 @@ def get_products():
         container = page.query_selector('._17mcb')
         products = container.query_selector_all('._95X4G')
 
-        with open('products_links.txt', 'w', encoding='utf-8') as file:
+        with open('product_links.txt', 'w', encoding='utf-8') as file:
             for product in products:
                 link = product.query_selector('a')
                 if link:
                     href = link.get_attribute('href')
-                    file.write(f"{href[2:]}\n")
+                    file.write(f"https:{href}\n")
 
 def main(url):
     product_details = dict()
@@ -40,7 +41,7 @@ def main(url):
 
         try:
             price = product_detail.query_selector('.pdp-price').text_content().replace('৳', '').strip()
-            product_details['price'] = float(price)
+            product_details['price'] = float(price.replace(',', ''))
         except AttributeError:
             product_details['price'] = 'NA'
 
@@ -64,3 +65,15 @@ def main(url):
                 'reviews': 'NA'})
 
     return product_details
+
+
+if __name__ == '__main__':
+    get_products()
+    file = open('product_links.txt', 'r')
+    details = []
+
+    for link in file.readlines():
+        details.append(main(link))
+
+    with open('product_details.json', 'w', encoding='utf') as file:
+        json.dump(details, file, indent=4)
